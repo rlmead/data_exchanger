@@ -1,4 +1,21 @@
 <?php
+// experiments in connecting to the KYIR server
+$wsdl = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/Cdc.aspx?WSDL";
+$kyir_server = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/cdc/v1/iisservice.svc";$kyir_soap_client = new SoapClient(
+  $wsdl,
+  array(
+    'soap_version' => SOAP_1_2, // need this to read content correctly
+    'location' => $kyir_server
+  ));
+print_r($kyir_soap_client->__getFunctions());
+
+echo ("<br><br>");
+
+$result = $kyir_soap_client->connectivityTest(
+  new SoapParam("echoBack", "name")
+);
+var_dump($result);
+
 class Data_Exchanger
 {
   // KYIR db credentials - pass in to new instance

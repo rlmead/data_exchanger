@@ -11,9 +11,10 @@ print_r($kyir_soap_client->__getFunctions());
 
 echo ("<br><br>");
 
-$result = $kyir_soap_client->connectivityTest(
-  new SoapParam("echoBack", "name")
+$params = array(
+  'echoBack' => 'hellooooo'
 );
+$result = $kyir_soap_client->connectivityTest($params);
 var_dump($result);
 
 class Data_Exchanger

@@ -1,7 +1,8 @@
 <?php
 // experiments in connecting to the KYIR server
 $wsdl = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/Cdc.aspx?WSDL";
-$kyir_server = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/cdc/v1/iisservice.svc";$kyir_soap_client = new SoapClient(
+$kyir_server = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/cdc/v1/iisservice.svc";
+$kyir_soap_client = new SoapClient(
   $wsdl,
   array(
     'soap_version' => SOAP_1_2, // need this to read content correctly
@@ -11,10 +12,10 @@ print_r($kyir_soap_client->__getFunctions());
 
 echo ("<br><br>");
 
-$params = array(
+$connectivity_test_params = array(
   'echoBack' => 'hellooooo'
 );
-$result = $kyir_soap_client->connectivityTest($params);
+$result = $kyir_soap_client->connectivityTest($connectivity_test_params);
 var_dump($result);
 
 class Data_Exchanger

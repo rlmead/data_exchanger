@@ -1,22 +1,8 @@
 <?php
 class Data_Exchanger
 {
-  // data to send to KYIR - pass in to new instance
-  public $kyir_username;
-  public $kyir_password;
-  public $kyir_facility_id;
-  public $hl7_message;
-
-  function __construct($kyir_username, $kyir_password, $kyir_facility_id, $hl7_message)
-  {
-    $this->kyir_username = $kyir_username;
-    $this->kyir_password = $kyir_password;
-    $this->kyir_facility_id = $kyir_facility_id;
-    $this->hl7_message = $hl7_message;
-  }
-
   // function to send a message to KYIR and receive the result
-  function call_kyir()
+  function call_kyir($kyir_username, $kyir_password, $kyir_facility_id, $hl7_message)
   {
     $wsdl = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/Cdc.aspx?WSDL";
     $kyir_server = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/cdc/v1/iisservice.svc";
@@ -49,7 +35,7 @@ class Data_Exchanger
       'facilityID' => $kyir_facility_id,
       'hl7Message' => $hl7_message
     );
-    $message_result = $kyir_soap_client->connectivityTest($submit_single_message_params);
+    $message_result = $kyir_soap_client->submitSingleMessage($submit_single_message_params);
     var_dump($message_result);
 
     // return: connection status / error
@@ -58,6 +44,3 @@ class Data_Exchanger
   // close client/connection?
 
 }
-
-$test_run = new Data_Exchanger('username', 'password', 'facility_id', 'hl7_message');
-print_r($test_run->call_kyir());

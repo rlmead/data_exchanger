@@ -1,23 +1,4 @@
 <?php
-// experiments in connecting to the KYIR server
-$wsdl = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/Cdc.aspx?WSDL";
-$kyir_server = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/cdc/v1/iisservice.svc";
-$kyir_soap_client = new SoapClient(
-  $wsdl,
-  array(
-    'soap_version' => SOAP_1_2, // need this to read content correctly
-    'location' => $kyir_server
-  ));
-print_r($kyir_soap_client->__getFunctions());
-
-echo ("<br><br>");
-
-$connectivity_test_params = array(
-  'echoBack' => 'hellooooo'
-);
-$result = $kyir_soap_client->connectivityTest($connectivity_test_params);
-var_dump($result);
-
 class Data_Exchanger
 {
   // KYIR db credentials - pass in to new instance
@@ -35,13 +16,26 @@ class Data_Exchanger
   }
 
   // connect to KYIR - called by other functions
-  function call_kyir($wsdl_method, $hl7_message)
+  function call_kyir($hl7_message)
   {
-    // input: kyir wsdl method required by function
-    // input: message defined by function
+    $wsdl = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/Cdc.aspx?WSDL";
+    $kyir_server = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/cdc/v1/iisservice.svc";
+    $kyir_soap_client = new SoapClient(
+      $wsdl,
+      array(
+        'soap_version' => SOAP_1_2, // need this to read content correctly
+        'location' => $kyir_server
+      )
+    );
+    print_r($kyir_soap_client->__getFunctions());
 
-    // connect to KYIR IIS
-    // https://kyirqa.chfs.ky.gov/HL7Engine_QA/CDC/V1/IISService.svc
+    echo ("<br><br>");
+
+    $connectivity_test_params = array(
+      'echoBack' => 'hellooooo'
+    );
+    $result = $kyir_soap_client->connectivityTest($connectivity_test_params);
+    var_dump($result);
 
     // return: connection status / error
   }
@@ -49,3 +43,6 @@ class Data_Exchanger
   // close client/connection?
 
 }
+
+$test_run = new Data_Exchanger('username', 'password', 'facility_id');
+print_r($test_run->call_kyir('message'));

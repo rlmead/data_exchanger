@@ -24,19 +24,15 @@ class Data_Exchanger
   public $kyir_username;
   public $kyir_password;
   public $kyir_facility_id;
-  public $wsdl_method;
   public $hl7_message;
-  public $patient;
-  public $shot;
 
   function __construct($kyir_username, $kyir_password, $kyir_facility_id)
   {
     $this->kyir_username = $kyir_username;
     $this->kyir_password = $kyir_password;
     $this->kyir_facility_id = $kyir_facility_id;
+    $this->hl7_message = $hl7_message;
   }
-
-  // methods for LFCHD vaccine registration app
 
   // connect to KYIR - called by other functions
   function call_kyir($wsdl_method, $hl7_message)
@@ -50,29 +46,6 @@ class Data_Exchanger
     // return: connection status / error
   }
 
-  // query a patient's vaccine status in KYIR
-  function get_vaccine_status($patient)
-  {
-    // input: patient identifier
-
-    // define $hl7_message
-    // call_kyir($wsdl_method, $hl7_message)
-
-    // return: patient vaccine status / error
-  }
-
-  // update a patient's vaccine status in KYIR (?)
-  function update_vaccine_status($patient, $shot)
-  {
-    // input: patient identifier
-    // input: which shot was administered
-
-    // define $hl7_message
-    // call_kyir($wsdl_method, $hl7_message)
-
-    // return: update status / error
-  }
-
-  // close client/connection (in functions?)
+  // close client/connection?
 
 }

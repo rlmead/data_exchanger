@@ -19,13 +19,18 @@ class Data_Exchanger
     // $substance_expiration_date = $input_data[11];
     // $administration_site = $input_data[12];
     $sending_facility = $input_data;
+    $time_current = date('YmdHis');
+    $time_incrementing = date('ymd').'KY000001';
 
-    $hl7_message = "MSH|^~\&||$sending_facility|KY0000|KY0000|20180726102500-0600||VXU^V04^VXU_V04|1cuT-A.01.01.3n|P|2.5.1|||ER|AL|||||Z22^CDCPHINVS
-    PID|1||L05M820^^^AIRA^MR||Northumberland^Kaja^Hetal^^^^L|Iversen^Trinidad^^^^^M|20020715|F||2106-3^White^CDCREC|93 Scott Cir^^Fountain^MI^49410^USA^P||^PRN^PH^^^231^6541667|||||||||2186-5^not Hispanic or Latino^CDCREC||N||||||N
-    PD1|||||||||||02^Reminder/Recall - any method^HL70215|N|20180726|||A|20180726|20180726
-    NK1|1|Northumberland^Iversen^Marion^^^^L|MTH^Mother^HL70063|93 Scott Cir^^Fountain^MI^49410^USA^P|^PRN^PH^^^231^6541667
-    ORC|RE||BL05M820.1^AIRA
-    RXA|0|1|20060726||03^MMR^CVX|999|||01^Historical^NIP001||^^^$sending_facility|||||||||CP|A";
+    $hl7_message = "MSH|^~\&||$sending_facility|KY0000|KY0000|$time_current||VXU^V04^VXU_V04|$time_incrementing|T|2.5.1|||||||||
+    PID|1||012345^^^$sending_facility^MR||LASTNAME^FIRSTNAME^^^^^L||19750101|F||1002-5^American Indian or Alaskan Native^CDCREC~2028-9^Asian^CDCREC~2106-3^White^CDCREC|STREET1^STREET2^LEXINGTON^KY^40507^USA^L||^PRN^PH^^^123^1234567|||||||||2186-5^Not Hispanic or Latino^CDCREC
+    ORC|RE||5ce43a4029b04817bb6|||||||||
+    RXA|0|1|20210331||212^Janssen COVID-19 Vaccine^CVX^59676-0580-05^SARS-COV-2 (COVID-19) vaccine, vector non-replicating, recombinant spike protein-Ad26, preservative free, 0.5 mL^NDC|0.5|mL^^UCUM||00^NEW IMMUNIZATION RECORD^NIP001|^OLAMINA^LAUREN|^^^$sending_facility||||123456|20210620|JSN^Janssen Products, LP^MVX|||CP|A
+    RXR|C28161^IM^NCIT^IM^^HL70162|LD^Left Deltoid^HL70163
+    OBX|1|CE|64994-7^Vaccine fund pgm elig cat^LN|1|V01^Not VFC Eligible^HL70064||||||F||||||VXC40^Eligibility captured at the immunization level^CDCPHINVS
+    OBX|2|CE|30963-3^Vaccine funding source^LN|1|VXC50^Public^CDCPHINVS||||||F|||
+    OBX|3|CE|29768-9^Date vaccine information statement published^LN|1|20210115||||||F
+    OBX|4|CE|29769-7^Date vaccine information statement presented^LN|1|20210331||||||F";
 
     return $hl7_message;
   }

@@ -4,23 +4,33 @@ class Data_Exchanger
   // function to properly format data from LFCHD database into HL7 message
   public function generate_hl7_message($input_data)
   {
-    // create variables from $input_data
-    // $kyir_num = $input_data[0];
-    // $last_name = $input_data[1];
-    // $first_name = $input_data[2];
-    // $dob = $input_data[3];
-    // $sex = $input_data[4];
-    // $race = $input_data[5];
-    // $address = $input_data[6];
-    // $phone_number = $input_data[7];
-    // $ethnic_group = $input_data[8];
-    // $date_of_administration = $input_data[9];
-    // $substance_lot_number = $input_data[10];
-    // $substance_expiration_date = $input_data[11];
-    // $administration_site = $input_data[12];
-    $sending_facility = $input_data;
+    // create variables for hl7 message from $input_data
+    $exploded_data = explode(',', $input_data);
+
+    $pef_id = $exploded_data[0];
+    $first_name = $exploded_data[1];
+    $last_name = $exploded_data[2];
+    $address_street = $exploded_data[3];
+    $address_city = $exploded_data[4];
+    $address_zip = $exploded_data[5];
+    $dob = $exploded_data[6];
+    $phone_number = $exploded_data[7];
+    $race_white = $exploded_data[8];
+    $race_black = $exploded_data[9];
+    $race_native_american = $exploded_data[10];
+    $race_asian = $exploded_data[11];
+    $race_pacific_islander = $exploded_data[12];
+    $race_withheld = $exploded_data[13];
+    $ethnic_group = $exploded_data[14];
+    $sex = $exploded_data[15];
+    $medicaid_id = $exploded_data[16];
+    $medicare_id = $exploded_data[17];
+    $ssn = $exploded_data[18];
+    $check_in_date = $exploded_data[19];
+
+    $sending_facility = 'LFUCGOVERNMENT';
     $time_current = date('YmdHis');
-    $time_incrementing = date('ymd').'KY000001';
+    $time_incrementing = date('ymd') . 'KY000001';
 
     $hl7_message = "MSH|^~\&||$sending_facility|KY0000|KY0000|$time_current||VXU^V04^VXU_V04|$time_incrementing|T|2.5.1|||||||||
     PID|1||012345^^^$sending_facility^MR||LASTNAME^FIRSTNAME^^^^^L||19750101|F||1002-5^American Indian or Alaskan Native^CDCREC~2028-9^Asian^CDCREC~2106-3^White^CDCREC|STREET1^STREET2^LEXINGTON^KY^40507^USA^L||^PRN^PH^^^123^1234567|||||||||2186-5^Not Hispanic or Latino^CDCREC
@@ -62,5 +72,4 @@ class Data_Exchanger
     // send hl7 message to KYIR server and return result
     return $kyir_soap_client->submitSingleMessage($submit_single_message_params);
   }
-
 }

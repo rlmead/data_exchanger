@@ -4,12 +4,11 @@ class Data_Exchanger
   // function to properly format data from LFCHD database into HL7 message
   public function generate_hl7_message($input_data)
   {
-    // define variables for hl7 message
-    // hard-coded variables that can remain hard-coded
+    // define variables used by hl7 message
+    // hard-coded variables that can remain hard-coded for Janssen covid vaccinations
     $sending_facility = "LFUCGOVERNMENT";
     $receiving_application = "KY0000";
     $receiving_facility = "KY0000";
-    $identifier_type = "SS";
     $address_state = "KY";
     $vaccine_code = "212^Janssen COVID-19 Vaccine^CVX^59676-0580-05^SARS-COV-2 (COVID-19) vaccine, vector non-replicating, recombinant spike protein-Ad26, preservative free, 0.5 mL^NDC";
     $vaccine_amount = "0.5";
@@ -18,7 +17,7 @@ class Data_Exchanger
     $vaccine_manufacturer = "JSN^Janssen Products, LP^MVX";
     $administration_route = "C28161^IM^NCIT^IM^^HL70162";
     // hard-coded variables that cannot remain hard-coded (currently fake data)
-    $vis_publish_date = "20210115";
+    $identifier_type = "SS";
     $provider_last_name = "Olamina";
     $provider_first_name = "Lauren";
     $administered_location = "LFUCGOVERNMENT";
@@ -26,8 +25,11 @@ class Data_Exchanger
     $vaccine_expiration_date = "20210620";
     $administration_site = "LD^Left Deltoid^HL70163";
     $observation_method = "VXC40^Eligibility captured at the immunization level^CDCPHINVS";
+    $vis_publish_date = "20210115";
     $vaccine_funding_source = "VXC50^Public^CDCPHINVS";
     // info from $input_data (many require reformatting)
+    // assumes data organized with the following columns/order:
+    // pefId,subFirstName,subLastName,subStreet,subCity,subZip,subBirthdate,subPhone,subWhite,subBlack,subNAmerican,subAsian,subPacific,subRaceNope,subEth,subSex,subMedicaidID,subMedicareID,subSSN,checkIn,kyirNum
     $input_data_array = explode(",", $input_data);
     $pef_id = $input_data_array[0];
     $patient_first_name = $input_data_array[1];
@@ -38,7 +40,6 @@ class Data_Exchanger
     $dob_unformatted = explode("/", $input_data_array[6]);
     $dob = $dob_unformatted[2] . str_pad($dob_unformatted[0], 2, "0", STR_PAD_LEFT) . str_pad($dob_unformatted[1], 2, "0", STR_PAD_LEFT);
     $phone_number = substr($input_data_array[7], 0, 3) . "^" . substr($input_data_array[7], 3);
-    $race = "";
     if ($input_data_array[8]) {
       $race = $race . "~2106-3^White^CDCREC";
     }
@@ -53,6 +54,9 @@ class Data_Exchanger
     }
     if ($input_data_array[12]) {
       $race = $race . "~2076-8^Native Hawaiian or Other Pacific Islander^CDCREC";
+    }
+    if ($input_data_array[13]) {
+      $race = $race . "";
     }
     if (strlen($race) > 0) {
       $race = substr($race, 1);
@@ -83,15 +87,16 @@ class Data_Exchanger
     // update $identifier_type to match
     $medicaid_id = $input_data_array[16];
     $medicare_id = $input_data_array[17];
+    $kyir_number = $input_data_array[20];
     $ssn = $input_data_array[18];
     $check_in_date_split = substr($input_data_array[19], 0, strpos($input_data_array[19], " "));
     $check_in_date_unformatted = explode("/", $check_in_date_split);
     $check_in_date = $check_in_date_unformatted[2] . str_pad($check_in_date_unformatted[0], 2, "0", STR_PAD_LEFT) . str_pad($check_in_date_unformatted[1], 2, "0", STR_PAD_LEFT);
-
     // automatically-generated variables
     $time_current = date("YmdHis");
     $time_incrementing = date("ymd") . "KY000001";
 
+    // declare hl7 message
     $hl7_message = "MSH|^~\&||$sending_facility|$receiving_application|$receiving_facility|$time_current||VXU^V04^VXU_V04|$time_incrementing|T|2.5.1|||||||||
     PID|1||$ssn^^^$sending_facility^$identifier_type||$patient_last_name^$patient_first_name^^^^^L||$dob|$sex||$race|$address_street^^$address_city^$address_state^$address_zip^USA^L||^PRN^PH^^^$phone_number|||||||||$ethnic_group
     ORC|RE||$pef_id|||||||||

@@ -26,6 +26,7 @@ class Data_Exchanger
     $administration_site = "LD^Left Deltoid^HL70163";
     $observation_method = "VXC40^Eligibility captured at the immunization level^CDCPHINVS";
     $vis_publish_date = "20210115";
+    $vaccine_eligibility = "V01^Not VFC Eligible^HL70064";
     $vaccine_funding_source = "VXC50^Public^CDCPHINVS";
     // info from $input_data (many require reformatting)
     // assumes data organized with the following columns/order:
@@ -102,7 +103,7 @@ class Data_Exchanger
     ORC|RE||$pef_id|||||||||
     RXA|0|1|$check_in_date||$vaccine_code|$vaccine_amount|$vaccine_units||$administration_notes|^$provider_last_name^$provider_first_name|^^^$administered_location||||$vaccine_lot_number|$vaccine_expiration_date|$vaccine_manufacturer|||CP|A
     RXR|$administration_route|$administration_site
-    OBX|1|CE|64994-7^Vaccine fund pgm elig cat^LN|1|V01^Not VFC Eligible^HL70064||||||F||||||$observation_method
+    OBX|1|CE|64994-7^Vaccine fund pgm elig cat^LN|1|$vaccine_eligibility||||||F||||||$observation_method
     OBX|2|CE|30963-3^Vaccine funding source^LN|1|$vaccine_funding_source||||||F|||
     OBX|3|CE|29768-9^Date vaccine information statement published^LN|1|$vis_publish_date||||||F
     OBX|4|CE|29769-7^Date vaccine information statement presented^LN|1|$check_in_date||||||F";
@@ -111,30 +112,28 @@ class Data_Exchanger
   }
 
   // function to send a message to KYIR and receive the result
-  public function call_kyir($kyir_username, $kyir_password, $kyir_facility_id, $input_data)
+  public function connect_to_server($server, $wsdl, $server_username, $server_password, $server_facility_id, $input_data)
   {
     $hl7_message = $this->generate_hl7_message($input_data);
 
     // set up soap client
-    $wsdl = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/Cdc.aspx?WSDL";
-    $kyir_server = "https://kyirqa.chfs.ky.gov/HL7Engine_QA/cdc/v1/iisservice.svc";
-    $kyir_soap_client = new SoapClient(
+    $soap_client = new SoapClient(
       $wsdl,
       array(
         "soap_version" => SOAP_1_2,
-        "location" => $kyir_server
+        "location" => $server
       )
     );
 
     // define parameters for submitSingleMessage
     $submit_single_message_params = array(
-      "username" => $kyir_username,
-      "password" => $kyir_password,
-      "facilityID" => $kyir_facility_id,
+      "username" => $server_username,
+      "password" => $server_password,
+      "facilityID" => $server_facility_id,
       "hl7Message" => $hl7_message
     );
 
     // send hl7 message to KYIR server and return result
-    return $kyir_soap_client->submitSingleMessage($submit_single_message_params);
+    return $soap_client->submitSingleMessage($submit_single_message_params);
   }
 }

@@ -16,6 +16,8 @@ class Data_Exchanger
     $administration_notes = "00^NEW IMMUNIZATION RECORD^NIP001";
     $vaccine_manufacturer = "JSN^Janssen Products, LP^MVX";
     $administration_route = "C28161^IM^NCIT^IM^^HL70162";
+    $vaccine_eligibility = "V01^Not VFC Eligible^HL70064";
+    $vaccine_funding_source = "VXC50^Public^CDCPHINVS";
     // hard-coded variables that cannot remain hard-coded (currently fake data)
     $identifier_type = "SS";
     $provider_last_name = "Olamina";
@@ -26,8 +28,6 @@ class Data_Exchanger
     $administration_site = "LD^Left Deltoid^HL70163";
     $observation_method = "VXC40^Eligibility captured at the immunization level^CDCPHINVS";
     $vis_publish_date = "20210115";
-    $vaccine_eligibility = "V01^Not VFC Eligible^HL70064";
-    $vaccine_funding_source = "VXC50^Public^CDCPHINVS";
     // info from $input_data (many require reformatting)
     // assumes data organized with the following columns/order:
     // pefId,subFirstName,subLastName,subStreet,subCity,subZip,subBirthdate,subPhone,subWhite,subBlack,subNAmerican,subAsian,subPacific,subRaceNope,subEth,subSex,subMedicaidID,subMedicareID,subSSN,checkIn,kyirNum
@@ -98,7 +98,7 @@ class Data_Exchanger
     $time_incrementing = date("ymd") . "KY000001";
 
     // declare hl7 message
-    $hl7_message = "MSH|^~\&||$sending_facility|$receiving_application|$receiving_facility|$time_current||VXU^V04^VXU_V04|$time_incrementing|T|2.5.1|||||||||
+    $hl7_message = "MSH|^~\&||$sending_facility|$receiving_application|$receiving_facility|$time_current||VXU^V04^VXU_V04|$time_incrementing|T|2.5.1
     PID|1||$ssn^^^$sending_facility^$identifier_type||$patient_last_name^$patient_first_name^^^^^L||$dob|$sex||$race|$address_street^^$address_city^$address_state^$address_zip^USA^L||^PRN^PH^^^$phone_number|||||||||$ethnic_group
     ORC|RE||$pef_id|||||||||
     RXA|0|1|$check_in_date||$vaccine_code|$vaccine_amount|$vaccine_units||$administration_notes|^$provider_last_name^$provider_first_name|^^^$administered_location||||$vaccine_lot_number|$vaccine_expiration_date|$vaccine_manufacturer|||CP|A

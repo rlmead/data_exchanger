@@ -18,19 +18,19 @@ class Data_Exchanger
     $administration_route = "C28161^IM^NCIT^IM^^HL70162";
     $vaccine_eligibility = "V01^Not VFC Eligible^HL70064";
     $vaccine_funding_source = "VXC50^Public^CDCPHINVS";
+    $observation_method = "VXC40^Eligibility captured at the immunization level^CDCPHINVS";
     // hard-coded variables that cannot remain hard-coded (currently fake data)
-    $identifier_type = "SS";
+    $identifier_type = "MR";
     $provider_last_name = "Olamina";
     $provider_first_name = "Lauren";
     $administered_location = "LFUCGOVERNMENT";
     $vaccine_lot_number = "123456";
     $vaccine_expiration_date = "20210620";
     $administration_site = "LD^Left Deltoid^HL70163";
-    $observation_method = "VXC40^Eligibility captured at the immunization level^CDCPHINVS";
     $vis_publish_date = "20210115";
     // info from $input_data (many require reformatting)
     // assumes data organized with the following columns/order:
-    // pefId,subFirstName,subLastName,subStreet,subCity,subZip,subBirthdate,subPhone,subWhite,subBlack,subNAmerican,subAsian,subPacific,subRaceNope,subEth,subSex,subMedicaidID,subMedicareID,subSSN,checkIn,kyirNum
+    // pefId,subFirstName,subLastName,subStreet,subCity,subZip,subBirthdate,subPhone,subWhite,subBlack,subNAmerican,subAsian,subPacific,subRaceNope,subEth,subSex,checkIn,kyirNum
     $input_data_array = explode(",", $input_data);
     $pef_id = $input_data_array[0];
     $patient_first_name = $input_data_array[1];
@@ -84,13 +84,8 @@ class Data_Exchanger
         $sex = "";
         break;
     };
-    // tbd: which of the following three do we use for PID-3?
-    // update $identifier_type to match
-    $medicaid_id = $input_data_array[16];
-    $medicare_id = $input_data_array[17];
-    $kyir_number = $input_data_array[20];
-    $ssn = $input_data_array[18];
-    $check_in_date_split = substr($input_data_array[19], 0, strpos($input_data_array[19], " "));
+    $kyir_number = $input_data_array[17];
+    $check_in_date_split = substr($input_data_array[16], 0, strpos($input_data_array[16], " "));
     $check_in_date_unformatted = explode("/", $check_in_date_split);
     $check_in_date = $check_in_date_unformatted[2] . str_pad($check_in_date_unformatted[0], 2, "0", STR_PAD_LEFT) . str_pad($check_in_date_unformatted[1], 2, "0", STR_PAD_LEFT);
     // automatically-generated variables
@@ -99,7 +94,7 @@ class Data_Exchanger
 
     // declare hl7 message
     $hl7_message = "MSH|^~\&||$sending_facility|$receiving_application|$receiving_facility|$time_current||VXU^V04^VXU_V04|$time_incrementing|T|2.5.1
-    PID|1||$ssn^^^$sending_facility^$identifier_type||$patient_last_name^$patient_first_name^^^^^L||$dob|$sex||$race|$address_street^^$address_city^$address_state^$address_zip^USA^L||^PRN^PH^^^$phone_number|||||||||$ethnic_group
+    PID|1||$kyir_number^^^$sending_facility^$identifier_type||$patient_last_name^$patient_first_name^^^^^L||$dob|$sex||$race|$address_street^^$address_city^$address_state^$address_zip^USA^L||^PRN^PH^^^$phone_number|||||||||$ethnic_group
     ORC|RE||$pef_id|||||||||
     RXA|0|1|$check_in_date||$vaccine_code|$vaccine_amount|$vaccine_units||$administration_notes|^$provider_last_name^$provider_first_name|^^^$administered_location||||$vaccine_lot_number|$vaccine_expiration_date|$vaccine_manufacturer|||CP|A
     RXR|$administration_route|$administration_site

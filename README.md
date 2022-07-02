@@ -1,2 +1,2 @@
 # Data Exchanger
-This is a project in service of the Lexington Fayette County Health Department vaccination effort.
+This project is a PHP library used for the Lexington Fayette County Health Department Covid-19 vaccination effort.
